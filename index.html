@@ -10,13 +10,13 @@
 <section class="panel"><h3>Game mode</h3><div class="modes"><button class="btn mode active" data-mode="computer">Play with 3 Computers</button><button class="btn mode" data-mode="online">Online Room</button></div>
 <div id="computerSetup" class="row" style="margin-top:10px"><label>Computer level</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Expert</option></select><button id="newComputer" class="btn danger">New 4-Round Game</button></div>
 <div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">Online: join room, wait for 4 seated players, host starts, everyone draws, calls in order, then plays their private hand.</div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
-<p class="rules">Four rounds. Four active players receive 13 cards. Players must follow suit when possible; ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
+<p class="rules">Four rounds. Four active players receive 13 cards. Players must follow suit when possible. If you do not have the lead suit, you must play ♠ if you have one. Only if you have neither the lead suit nor ♠ may you play another suit. ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
 <div class="grid4"><div class="box">Round<strong id="roundNo">1 / 4</strong></div><div class="box">Trick<strong id="trickNo">1 / 13</strong></div><div class="box">Lead suit<strong id="leadSuit">None</strong></div><div class="box">Trump<strong>♠</strong></div></div>
 <section id="drawPanel" class="panel"><h3>Draw to decide who calls last</h3><div id="drawArea" class="draw-area"></div><div id="drawMessage" class="message"></div></section>
 <section class="panel"><h3>Players</h3><div id="players" class="players"></div></section>
 <section id="bidPanel" class="panel hidden"><h3>Your call</h3><p id="bidInstruction"></p><div id="bidButtons" class="bid-buttons"></div></section>
 <section class="panel"><div id="message" class="message"></div><div id="table" class="table"></div></section>
-<section class="panel"><h3>Your hand</h3><div id="hand" class="hand"></div><p id="handHelp" class="warning hidden">Green outline shows the cards you may legally play.</p></section>
+<section class="panel"><h3>Your hand</h3><div id="hand" class="hand"></div><p id="handHelp" class="warning hidden">Green outline = legal card. Follow the lead suit. If you do not have that suit, you MUST play a Spade if you have one. If you have no Spades, any remaining card is allowed.</p></section>
 <section class="panel right-score"><h3>Four-round score</h3><div id="scoreBoard"></div><div id="finalPayment"></div></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.3/dist/umd/supabase.min.js"></script>
@@ -76,7 +76,18 @@ function submitBid(n){
 }
 function checkAllBids(){for(var i=0;i<4;i++)if(bids[i]===null)return false;return true}
 function startPlay(){phase='playing';E('bidPanel').classList.add('hidden');current=leader;render();broadcast();continueTurn()}
-function legalCards(p){var h=hands[p];if(!trickCards.length)return h.slice();var suit=trickCards[0].card.suit,m=h.filter(function(c){return c.suit===suit});return m.length?m:h.slice()}
+function legalCards(p){
+ var h=hands[p];
+ if(!trickCards.length)return h.slice();
+ var lead=trickCards[0].card.suit;
+ var same=h.filter(function(c){return c.suit===lead});
+ if(same.length)return same;
+ /* If player cannot follow the lead suit, Spades are compulsory when available. */
+ var spades=h.filter(function(c){return c.suit==='♠'});
+ if(spades.length)return spades;
+ /* Only when the player has neither lead suit nor Spades may any remaining card be played. */
+ return h.slice();
+}
 function playHuman(index){var seat=mode==='computer'?0:mySeat;if(phase!=='playing'||busy||current!==seat||seat<0)return;var card=hands[seat][index];if(legalCards(seat).indexOf(card)<0)return;if(mode==='online'){if(isHost){applyPlay(seat,index)}else{busy=true;render();broadcastAction({type:'play',seat:seat,index:index,card:hands[seat][index]?hands[seat][index].rank+hands[seat][index].suit:''})}}else{applyPlay(seat,index)}}
 function applyPlay(seat,index){if(phase!=='playing'||current!==seat||!hands[seat][index])return;var card=hands[seat][index];if(legalCards(seat).indexOf(card)<0)return;hands[seat].splice(index,1);trickCards.push({player:seat,card:card});current=(current+1)%4;render();broadcast();if(trickCards.length===4){busy=true;timer=setTimeout(finishTrick,650)}else continueTurn()}
 function continueTurn(){if(phase!=='playing')return;if(mode==='computer'&&current!==0){busy=true;timer=setTimeout(function(){applyPlay(current,botChoice(current))},400)}else{busy=false;E('message').textContent=current===(mode==='computer'?0:mySeat)?'Your turn. Play a highlighted legal card.':names[current]+' is playing...';render()}}
