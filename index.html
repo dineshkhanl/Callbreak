@@ -5,19 +5,33 @@
 <title>Call Break - 4 Round Computer and Online</title>
 <style>
 :root{--bg:#0d3326;--panel:#20523e;--deep:#143d2d;--gold:#ffd76b;--green:#8df0aa;--red:#d11d30;--blue:#9bd7ff}*{box-sizing:border-box}body{margin:0;padding:12px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}.app{max-width:1150px;margin:auto}h1{text-align:center;color:var(--gold);margin:8px}.panel{background:var(--panel);padding:14px;border-radius:12px;margin:12px 0}.hidden{display:none!important}.grid4,.players,.payments{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.box,.player,.pay{background:var(--deep);padding:10px;border-radius:9px;text-align:center}.box strong,.player strong,.pay strong{display:block;font-size:22px;color:var(--gold)}.player.active{outline:3px solid var(--gold)}.player.last-bid{outline:3px solid var(--blue)}button,input,select{font:inherit}.btn{border:0;border-radius:8px;padding:11px 14px;font-weight:bold;cursor:pointer}.mode{background:var(--deep);color:#fff;border:2px solid transparent}.mode.active{border-color:var(--gold);color:var(--gold)}.primary{background:var(--gold);color:#222}.secondary{background:#eee;color:#222}.danger{background:#efa6a6;color:#222}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row input,.row select{padding:10px;border:0;border-radius:8px;min-width:140px}.status{background:var(--bg);padding:10px;border-radius:8px;margin-top:8px}.ok{color:var(--green);border:1px solid var(--green)}.error{color:#ffb3b3;border:1px solid #ff9999}.message{text-align:center;color:var(--gold);font-weight:bold;font-size:19px;min-height:28px}.draw-area,.table{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.draw,.slot{background:var(--deep);padding:9px;border-radius:9px;text-align:center;min-height:108px}.face-down,.played{display:inline-flex;width:64px;height:82px;align-items:center;justify-content:center;border-radius:8px;font-size:22px;font-weight:bold}.face-down{background:repeating-linear-gradient(45deg,#224b8f,#224b8f 8px,#17366a 8px,#17366a 16px);border:3px solid #fff;cursor:pointer}.played{background:#fff;color:#111}.red{color:var(--red)!important}.hand{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.card{width:62px;height:82px;background:#fff;color:#111;border:2px solid #ddd;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer}.card:hover:not(:disabled){transform:translateY(-5px);border-color:var(--gold)}.card:disabled{opacity:.4;cursor:not-allowed}.card.legal{box-shadow:0 0 0 3px var(--green)}.bid-buttons{display:flex;flex-wrap:wrap;gap:7px}.bid-buttons button{min-width:44px}.score-table{width:100%;border-collapse:collapse}.score-table th,.score-table td{padding:8px;border-bottom:1px solid #6b9478;text-align:center}.right-score{position:sticky;top:8px}.people{display:flex;flex-wrap:wrap;gap:6px}.pill{background:var(--deep);padding:6px 10px;border-radius:18px}.rules{font-size:14px;line-height:1.5;color:#d7eadf}.warning{background:#523c12;color:#ffe6a1;padding:8px;border-radius:7px}@media(max-width:760px){.grid4,.players,.payments,.draw-area,.table{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr}.card{width:52px;height:72px;font-size:16px}.row>*{flex:1 1 130px}}
-</style></head>
+</style>
+<style>
+/* User-friendly card interface */
+body{font-size:16px}.app{max-width:1200px}.panel{box-shadow:0 3px 12px rgba(0,0,0,.14)}
+.message{background:#0f2d23;padding:12px;border-radius:10px;position:sticky;top:6px;z-index:5}
+.hand{gap:8px;padding:10px 4px;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;scrollbar-width:thin}
+.card{width:72px;min-width:72px;height:98px;font-size:21px;border-width:3px;box-shadow:0 3px 6px rgba(0,0,0,.22)}
+.card.legal{box-shadow:0 0 0 4px #8df0aa,0 4px 8px rgba(0,0,0,.25);transform:translateY(-4px)}
+.card:disabled:not(.legal){filter:saturate(.7);opacity:.32}.played{width:72px;height:94px;font-size:25px}.slot{min-height:125px}.player strong{font-size:25px}
+.player.active{outline-width:4px;box-shadow:0 0 14px rgba(255,215,107,.55)}
+#handHelp{font-size:15px;font-weight:bold}.bid-buttons .btn{font-size:18px;min-width:52px}.face-down{width:76px;height:98px;font-size:18px}
+@media(min-width:900px){.hand{justify-content:center;flex-wrap:wrap}}
+@media(max-width:600px){body{padding:7px}.panel{padding:10px}.card{width:54px;min-width:54px;height:76px;font-size:16px}.played{width:58px;height:76px;font-size:19px}.hand{gap:5px}.grid4,.players,.payments,.draw-area,.table{gap:5px}.player,.box{padding:7px 3px}.message{font-size:17px}}
+</style>
+</head>
 <body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1>
 <section class="panel"><h3>Game mode</h3><div class="modes"><button class="btn mode active" data-mode="computer">Play with 3 Computers</button><button class="btn mode" data-mode="online">Online Room</button></div>
 <div id="computerSetup" class="row" style="margin-top:10px"><label>Computer level</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Expert</option></select><button id="newComputer" class="btn danger">New 4-Round Game</button></div>
-<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">Online: join room, wait for 4 seated players, host starts, everyone draws, calls in order, then plays their private hand.</div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
-<p class="rules">Four rounds. Four active players receive 13 cards. Players must follow suit when possible. If you do not have the lead suit, you must play ♠ if you have one. Only if you have neither the lead suit nor ♠ may you play another suit. ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
+<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: First 4 people get seats. When all 4 are connected, the HOST presses Start Online Game. Each player taps PICK, makes a call in order, then plays only the green-outlined legal cards from their private 13-card hand.</div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
+<p class="rules">Four rounds. Four active players receive 13 cards. Players must beat the current winning card in the lead suit when possible. If no higher lead-suit card is available, ♠ is compulsory when available. Otherwise follow suit; if neither is available, any card may be played. ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
 <div class="grid4"><div class="box">Round<strong id="roundNo">1 / 4</strong></div><div class="box">Trick<strong id="trickNo">1 / 13</strong></div><div class="box">Lead suit<strong id="leadSuit">None</strong></div><div class="box">Trump<strong>♠</strong></div></div>
 <section id="drawPanel" class="panel"><h3>Draw to decide who calls last</h3><div id="drawArea" class="draw-area"></div><div id="drawMessage" class="message"></div></section>
-<section class="panel"><h3>Players</h3><div id="players" class="players"></div></section>
+<section class="panel"><h3>Player Status</h3><div id="players" class="players"></div></section>
 <section id="bidPanel" class="panel hidden"><h3>Your call</h3><p id="bidInstruction"></p><div id="bidButtons" class="bid-buttons"></div></section>
 <section class="panel"><div id="message" class="message"></div><div id="table" class="table"></div></section>
-<section class="panel"><h3>Your hand</h3><div id="hand" class="hand"></div><p id="handHelp" class="warning hidden">Green outline = legal card. Follow the lead suit. If you do not have that suit, you MUST play a Spade if you have one. If you have no Spades, any remaining card is allowed.</p></section>
-<section class="panel right-score"><h3>Four-round score</h3><div id="scoreBoard"></div><div id="finalPayment"></div></section>
+<section class="panel"><h3>🂠 Your Cards</h3><p style="margin-top:-4px;color:#d7eadf">Tap a bright green-outlined card when it is your turn. Dim cards cannot be played.</p><div id="hand" class="hand"></div><p id="handHelp" class="warning hidden">PLAY RULE: Green outline = playable. If you can beat the current card in the lead suit, you MUST beat it. If you cannot beat it, you MUST play ♠ when available. If no required ♠ is available, follow suit; if you have neither, play any card.</p></section>
+<section class="panel"><div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:18px;font-weight:bold"><span style="color:#d11d30">♥ Hearts</span><span>♣ Clubs</span><span style="color:#d11d30">♦ Diamonds</span><span>♠ Spades = TRUMP</span></div></section><section class="panel right-score"><h3>Scoreboard • 4 Rounds</h3><div id="scoreBoard"></div><div id="finalPayment"></div></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.3/dist/umd/supabase.min.js"></script>
 <script>
@@ -77,18 +91,34 @@ function submitBid(n){
 function checkAllBids(){for(var i=0;i<4;i++)if(bids[i]===null)return false;return true}
 function startPlay(){phase='playing';E('bidPanel').classList.add('hidden');current=leader;render();broadcast();continueTurn()}
 function legalCards(p){
- var h=hands[p];
- if(!trickCards.length)return h.slice();
+ var hand=hands[p];
+ if(!trickCards.length)return hand.slice();
  var lead=trickCards[0].card.suit;
- var same=h.filter(function(c){return c.suit===lead});
- if(same.length)return same;
- /* If player cannot follow the lead suit, Spades are compulsory when available. */
- var spades=h.filter(function(c){return c.suit==='♠'});
- if(spades.length)return spades;
- /* Only when the player has neither lead suit nor Spades may any remaining card be played. */
- return h.slice();
+ var currentWin=winner(trickCards).card;
+ var sameSuit=hand.filter(function(c){return c.suit===lead});
+ var biggerSame=[];
+ if(currentWin.suit===lead){
+  biggerSame=sameSuit.filter(function(c){return VALUE[c.rank]>VALUE[currentWin.rank]});
+ }
+ /* If a higher card of the lead suit exists, it is compulsory. */
+ if(biggerSame.length)return biggerSame;
+ /* If no higher lead-suit card exists, a Spade is compulsory when available.
+    When Spades are already winning, only a higher Spade can beat the trick. */
+ var spades=hand.filter(function(c){return c.suit==='♠'});
+ if(spades.length){
+  if(currentWin.suit==='♠'){
+   var higherSpades=spades.filter(function(c){return VALUE[c.rank]>VALUE[currentWin.rank]});
+   if(higherSpades.length)return higherSpades;
+  }else{
+   return spades;
+  }
+ }
+ /* If the player cannot beat and has no required Spade, follow suit if possible. */
+ if(sameSuit.length)return sameSuit;
+ /* No lead suit and no Spade: any card is legal. */
+ return hand.slice();
 }
-function playHuman(index){var seat=mode==='computer'?0:mySeat;if(phase!=='playing'||busy||current!==seat||seat<0)return;var card=hands[seat][index];if(legalCards(seat).indexOf(card)<0)return;if(mode==='online'){if(isHost){applyPlay(seat,index)}else{busy=true;render();broadcastAction({type:'play',seat:seat,index:index,card:hands[seat][index]?hands[seat][index].rank+hands[seat][index].suit:''})}}else{applyPlay(seat,index)}}
+function playHuman(index){var seat=mode==='computer'?0:mySeat;if(phase!=='playing'||busy||current!==seat||seat<0)return;var card=hands[seat][index];if(legalCards(seat).indexOf(card)<0)return;if(mode==='online'){if(isHost){applyPlay(seat,index);broadcast()}else{busy=true;render();broadcastAction({type:'play',seat:seat,index:index,card:hands[seat][index]?hands[seat][index].rank+hands[seat][index].suit:''})}}else{applyPlay(seat,index)}}
 function applyPlay(seat,index){if(phase!=='playing'||current!==seat||!hands[seat][index])return;var card=hands[seat][index];if(legalCards(seat).indexOf(card)<0)return;hands[seat].splice(index,1);trickCards.push({player:seat,card:card});current=(current+1)%4;render();broadcast();if(trickCards.length===4){busy=true;timer=setTimeout(finishTrick,650)}else continueTurn()}
 function continueTurn(){if(phase!=='playing')return;if(mode==='computer'&&current!==0){busy=true;timer=setTimeout(function(){applyPlay(current,botChoice(current))},400)}else{busy=false;E('message').textContent=current===(mode==='computer'?0:mySeat)?'Your turn. Play a highlighted legal card.':names[current]+' is playing...';render()}}
 function botChoice(p){var h=hands[p],legal=legalCards(p),diff=E('difficulty').value.toLowerCase();if(diff==='easy')return h.indexOf(legal[Math.floor(Math.random()*legal.length)]);var ordered=legal.slice().sort(function(a,b){return strength(a)-strength(b)}),wins=[];for(var i=0;i<ordered.length;i++){if(winner(trickCards.concat([{player:p,card:ordered[i]}])).player===p)wins.push(ordered[i])}var need=tricks[p]<(bids[p]||1),choice=need&&wins.length?wins[0]:ordered[0];return h.indexOf(choice)}function strength(c){return VALUE[c.rank]+(c.suit==='♠'?20:0)}
@@ -121,7 +151,7 @@ function hostAction(a){
  if(!isHost||!a||a.sender===myId)return;
  if(a.type==='start'&&phase==='lobby'&&members.length>=4){startNew();return}
  if(a.type==='bid'&&phase==='bidding'&&bidTurn<4&&a.seat===bidOrder[bidTurn]&&bids[a.seat]===null){bids[a.seat]=a.bid;bidTurn++;render();advanceBidding();broadcast();return}
- if(a.type==='play'&&phase==='playing'&&a.seat===current){var idx=a.index;if(a.card){idx=-1;for(var q=0;q<hands[a.seat].length;q++){if(hands[a.seat][q].rank+hands[a.seat][q].suit===a.card){idx=q;break}}}if(idx>=0)applyPlay(a.seat,idx);return}
+ if(a.type==='play'&&phase==='playing'&&a.seat===current){var idx=a.index;if(a.card){idx=-1;for(var q=0;q<hands[a.seat].length;q++){if(hands[a.seat][q].rank+hands[a.seat][q].suit===a.card){idx=q;break}}}if(idx>=0){applyPlay(a.seat,idx);broadcast()}return}
  if(a.type==='draw'&&phase==='draw'&&!drawCards[a.seat]){drawCards[a.seat]=deck()[0];render();broadcast();finishDrawIfReady();return}
 }
 function connectRoom(create){
@@ -143,7 +173,7 @@ function connectRoom(create){
    for(var j=0;j<Math.min(4,members.length);j++)if(members[j].id===myId)mySeat=j;
    E('people').innerHTML='';
    members.forEach(function(m,i){var tag=document.createElement('span');tag.className='pill';tag.textContent=m.name+(i<4?' - Seat '+(i+1):' - Spectator');E('people').appendChild(tag)});
-   E('startOnline').classList.toggle('hidden',!(isHost&&members.length>=4&&phase==='lobby'));if(phase==='lobby'){status(members.length<4?'Connected. Waiting for '+(4-members.length)+' more player(s).':(isHost?'4 players seated. Press Start Online Game.':'4 players seated. Waiting for host to start.'),'ok')}render();if(isHost)broadcast();
+   if(isHost&&members.length>=4&&phase==='lobby'){E('startOnline').classList.remove('hidden')}else{E('startOnline').classList.add('hidden')}if(phase==='lobby'){status(members.length<4?'Connected. Waiting for '+(4-members.length)+' more player(s).':(isHost?'4 players seated. Press Start Online Game.':'4 players seated. Waiting for host to start.'),'ok')}render();if(isHost)broadcast();
   });
   ch.on('broadcast',{event:'state'},function(m){if(!isHost)applyOnlineState(m.payload)});
   ch.on('broadcast',{event:'action'},function(m){hostAction(m.payload)});
@@ -163,7 +193,7 @@ function connectRoom(create){
 document.querySelectorAll('.mode').forEach(function(b){b.addEventListener('click',function(){setMode(this.dataset.mode)})});
 E('newComputer').addEventListener('click',startNew);
 E('createRoom').addEventListener('click',function(){connectRoom(true)});
-E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('startOnline').addEventListener('click',function(){if(!isHost){return}if(members.length<4){status('Need four seated players before starting. Currently '+members.length+'/4.','error');return}E('startOnline').classList.add('hidden');round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];deal();status('Game started. Each seated player must tap the ? card under their own name.','ok');broadcast()});
+E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('startOnline').addEventListener('click',function(){if(!isHost){status('Only the room host can start the game.','error');return}if(members.length<4){status('Need 4 seated players before starting. Currently '+members.length+'/4.','error');return}E('startOnline').classList.add('hidden');round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];deal();status('Game started. Each player must tap PICK under their own name.','ok');broadcast()});
 window.addEventListener('error',function(e){var box=E('startupError');if(box){box.textContent='Game error: '+(e.message||'Unknown script error');box.classList.remove('hidden')}});
 try{setMode('computer')}catch(e){var box=E('startupError');if(box){box.textContent='Game could not start: '+e.message;box.classList.remove('hidden')}}
 })();
