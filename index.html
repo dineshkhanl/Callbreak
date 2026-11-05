@@ -23,7 +23,7 @@ body{font-size:16px}.app{max-width:1200px}.panel{box-shadow:0 3px 12px rgba(0,0,
 <body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1>
 <section class="panel"><h3>Game mode</h3><div class="modes"><button class="btn mode active" data-mode="computer">Play with 3 Computers</button><button class="btn mode" data-mode="online">Online Room</button></div>
 <div id="computerSetup" class="row" style="margin-top:10px"><label>Computer level</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Expert</option></select><button id="newComputer" class="btn danger">New 4-Round Game</button></div>
-<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: First 4 people get seats. When 4 players are connected, the host presses Start Online Game. Each player taps PICK, makes a call in order, then plays only the green-outlined legal cards from their private 13-card hand.</div><div class="row" id="hostControls" style="margin-top:10px"><button id="fillBots" class="btn secondary hidden" type="button">Fill Empty Seats with Computers</button><button id="startOnline" class="btn primary hidden" type="button">Start Online Game</button></div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
+<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: The host can start with 2, 3, or 4 human players. Any empty seats are filled by computers. Each human taps PICK, makes a call in order, then plays only the green-outlined legal cards from their hand.</div><div class="row" id="hostControls" style="margin-top:10px"><button id="startOnline2" class="btn primary hidden" type="button">Start with 2 Online + Bots</button><button id="startOnline3" class="btn primary hidden" type="button">Start with 3 Online + Bots</button><button id="startOnline" class="btn primary hidden" type="button">Start with 4 Online</button></div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
 <p class="rules">Four rounds. Four active players receive 13 cards. Players must beat the current winning card in the lead suit when possible. If no higher lead-suit card is available, ♠ is compulsory when available. Otherwise follow suit; if neither is available, any card may be played. ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
 <div class="grid4"><div class="box">Round<strong id="roundNo">1 / 4</strong></div><div class="box">Trick<strong id="trickNo">1 / 13</strong></div><div class="box">Lead suit<strong id="leadSuit">None</strong></div><div class="box">Trump<strong>♠</strong></div></div>
 <section id="drawPanel" class="panel"><h3>Draw to decide who calls last</h3><div id="drawArea" class="draw-area"></div><div id="drawMessage" class="message"></div></section>
@@ -155,11 +155,17 @@ function hostAction(a){
  if(a.type==='draw'&&phase==='draw'&&!drawCards[a.seat]){drawCards[a.seat]=deck()[0];render();broadcast();finishDrawIfReady();return}
 }
 
-function fillEmptyWithBots(){
+function startOnlineWithBots(minHumans){
  if(!isHost||phase!=='lobby')return;
+ if(members.length<minHumans){status('Need at least '+minHumans+' online players before starting.','error');return}
+ if(members.length>4){status('Only the first four connected players can take seats.','error');return}
+ onlineBots=[false,false,false,false];
  for(var i=members.length;i<4;i++){onlineBots[i]=true;names[i]='Computer '+(i+1)}
- E('fillBots').classList.add('hidden');E('startOnline').classList.remove('hidden');
- status('Empty seats filled with computers. Press Start Online Game.','ok');render();broadcast();
+ for(var j=0;j<members.length;j++)names[j]=members[j].name;
+ E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden');
+ round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];
+ status(members.length+' online player(s); '+(4-members.length)+' computer(s). Starting game...','ok');
+ deal();broadcast();
 }
 function runOnlineBots(){
  if(mode!=='online'||!isHost)return;
@@ -185,12 +191,12 @@ function connectRoom(create){
    var state=ch.presenceState(),all=[];
    Object.keys(state).forEach(function(k){all=all.concat(state[k])});
    members=all.sort(function(a,b){return a.joined-b.joined});
-   for(var i=0;i<4;i++)names[i]=members[i]?members[i].name:'Seat '+(i+1);
+   if(phase==='lobby'){for(var i=0;i<4;i++)names[i]=members[i]?members[i].name:'Seat '+(i+1);}
    mySeat=-1;
-   for(var j=0;j<Math.min(4,members.length);j++)if(members[j].id===myId)mySeat=j;if(isHost&&phase==='lobby'&&members.length>=4){E('fillBots').classList.add('hidden');E('startOnline').classList.remove('hidden');status('4 players connected. Press Start Online Game to begin.','ok')}
+   for(var j=0;j<Math.min(4,members.length);j++)if(members[j].id===myId)mySeat=j;
    E('people').innerHTML='';
    members.forEach(function(m,i){var tag=document.createElement('span');tag.className='pill';tag.textContent=m.name+(i<4?' - Seat '+(i+1):' - Spectator');E('people').appendChild(tag)});
-   if(isHost&&phase==='lobby'){var seated=members.length+onlineBots.filter(function(x){return x}).length;E('fillBots').classList.toggle('hidden',seated>=4||members.length>=4);E('startOnline').classList.toggle('hidden',seated<4)}else{E('startOnline').classList.add('hidden');E('fillBots').classList.add('hidden')}if(phase==='lobby'){status(members.length<4?(isHost?'Connected. '+members.length+'/4 people. You can wait or Fill Empty Seats with Computers.':'Connected. Waiting for host. '+members.length+'/4 human players connected.'):(isHost?'4 players connected. Starting automatically...':'4 players connected. Game is starting automatically...'),'ok')}render();if(isHost)broadcast();
+   if(isHost&&phase==='lobby'){E('startOnline2').classList.toggle('hidden',members.length<2);E('startOnline3').classList.toggle('hidden',members.length<3);E('startOnline').classList.toggle('hidden',members.length<4)}else{E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden')}if(phase==='lobby'){status(isHost?'Connected. '+members.length+' human player(s). Start with 2, 3, or 4 online players; empty seats become computers.':'Connected. Waiting for the host. '+members.length+'/4 human players connected.','ok')}render();if(isHost)broadcast();
   });
   ch.on('broadcast',{event:'state'},function(m){if(!isHost)applyOnlineState(m.payload)});
   ch.on('broadcast',{event:'action'},function(m){hostAction(m.payload)});
@@ -200,7 +206,7 @@ function connectRoom(create){
     connected=true;
     await ch.track({id:myId,name:name,joined:Date.now()});
     status('Connected to room '+code+(create?' as host.':'.'),'ok');
-    phase='lobby';E('startOnline').classList.toggle('hidden',!(isHost&&members.length>=4));render();ch.send({type:'broadcast',event:'request',payload:{sender:myId}});
+    phase='lobby';E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden');render();ch.send({type:'broadcast',event:'request',payload:{sender:myId}});
    }else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){
     connected=false;status('Connection: '+st,'error');
    }
@@ -210,7 +216,7 @@ function connectRoom(create){
 document.querySelectorAll('.mode').forEach(function(b){b.addEventListener('click',function(){setMode(this.dataset.mode)})});
 E('newComputer').addEventListener('click',startNew);
 E('createRoom').addEventListener('click',function(){connectRoom(true)});
-E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('fillBots').addEventListener('click',fillEmptyWithBots);E('startOnline').addEventListener('click',function(){if(!isHost){status('Only the room host can start the game.','error');return}var seated=members.length+onlineBots.filter(function(x){return x}).length;if(seated<4){status('Need 4 seats. Add players or press Fill Empty Seats with Computers.','error');return}E('startOnline').classList.add('hidden');E('fillBots').classList.add('hidden');round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];deal();status('Game started. Each player must tap PICK under their own name.','ok');broadcast()});
+E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('startOnline2').addEventListener('click',function(){startOnlineWithBots(2)});E('startOnline3').addEventListener('click',function(){startOnlineWithBots(3)});E('startOnline').addEventListener('click',function(){startOnlineWithBots(4)});
 window.addEventListener('error',function(e){var box=E('startupError');if(box){box.textContent='Game error: '+(e.message||'Unknown script error');box.classList.remove('hidden')}});
 try{setMode('computer')}catch(e){var box=E('startupError');if(box){box.textContent='Game could not start: '+e.message;box.classList.remove('hidden')}}
 })();
