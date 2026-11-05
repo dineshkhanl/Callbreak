@@ -29,7 +29,7 @@
 <section id="drawPanel" class="panel hidden"><h3>Draw a face-down card</h3><p>Each player draws one card. Draw numbers show beside room member names. If the lowest number is tied, only those tied players redraw. The final lowest-card player calls last.</p><div id="drawArea" class="players"></div><div id="drawMessage" class="message"></div></section><section class="panel"><h3>Players</h3><div id="players" class="players"></div></section>
 <section id="bidPanel" class="panel hidden"><h3>Your call</h3><p id="bidInstruction"></p><div id="bidButtons" class="bid-buttons"></div></section>
 <section class="panel"><div id="message" class="message"></div><div id="table" class="table"></div></section>
-<section class="panel"><h3>Your cards</h3><div id="hand" class="hand"></div><p class="warning">Green outline = legal. If you can beat the current winning card, you MUST beat it. Example: if 10♠ is winning and you hold K♠, K♠ must be played. Follow suit; ♠ is trump.</p></section>
+<section class="panel"><h3>Your cards</h3><div id="hand" class="hand"></div><p class="warning">Green outline = legal. PRIORITY: (1) follow the lead suit if you have it, and beat the lead-suit winner when possible; (2) only if you have no lead suit, play ♠ when available, and beat the current ♠ when possible; (3) if you have neither lead suit nor ♠, play any card.</p></section>
 <section class="panel"><h3>Scoreboard</h3><div id="scoreBoard"></div></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.3/dist/umd/supabase.min.js"></script>
@@ -58,7 +58,41 @@ function estimate(h){h=Array.isArray(h)?h:[];var n=0;h.forEach(function(c){if(c.
 function advanceBid(){if(phase!=='bidding'||(mode==='online'&&!isHost))return;while(bidPos<4&&bids[bidOrder[bidPos]]!==null)bidPos++;if(bidPos>=4){phase='playing';current=leader;busy=false;stateVersion++;render();broadcast();continueTurn();return}bidTurn=bidOrder[bidPos];current=bidTurn;stateVersion++;render();broadcast();if(isBot(current)){var seat=current;botTimer=setTimeout(function(){if(phase!=='bidding'||current!==seat||bids[seat]!==null)return;bids[seat]=estimate(hands[seat]);bidPos++;advanceBid()},500)}}
 function submitBid(n){var s=mode==='computer'?0:mySeat;if(phase!=='bidding'||s<0||s!==current||bids[s]!==null)return;if(mode==='online'&&!isHost){sendAction({type:'bid',seat:s,bid:n});return}bids[s]=n;bidPos++;stateVersion++;broadcast();advanceBid()}
 function winning(arr){if(!Array.isArray(arr)||!arr.length)return null;var lead=arr[0].card.suit,b=arr[0];for(var i=1;i<arr.length;i++){var x=arr[i],xt=x.card.suit==='♠',bt=b.card.suit==='♠';if(xt&&!bt)b=x;else if(xt===bt&&x.card.suit===b.card.suit&&V[x.card.rank]>V[b.card.rank])b=x;else if(!xt&&!bt&&x.card.suit===lead&&b.card.suit!==lead)b=x}return b}
-function legal(s){normalise();var h=hands[s]||[];if(!cards.length)return h.slice();var lead=cards[0].card.suit;var win=winning(cards);var winCard=win.card;var same=h.filter(function(c){return c.suit===lead});var higherSame=[];if(winCard.suit===lead)higherSame=same.filter(function(c){return V[c.rank]>V[winCard.rank]});if(higherSame.length)return higherSame;var sp=h.filter(function(c){return c.suit==='♠'});if(winCard.suit==='♠'){var higherSpades=sp.filter(function(c){return V[c.rank]>V[winCard.rank]});if(higherSpades.length)return higherSpades;if(lead==='♠')return sp.length?sp:h.slice();}if(same.length)return same;if(sp.length){if(winCard.suit==='♠'){var beatTrump=sp.filter(function(c){return V[c.rank]>V[winCard.rank]});return beatTrump.length?beatTrump:sp}return sp}return h.slice()}
+function legal(s){
+ normalise();
+ var h=hands[s]||[];
+ if(!cards.length)return h.slice();
+ var lead=cards[0].card.suit;
+ var same=h.filter(function(c){return c.suit===lead});
+ var win=winning(cards);
+ var winCard=win?win.card:cards[0].card;
+ /* RULE 1: Lead suit ALWAYS has priority. If player has the lead suit,
+    the player may not use a Spade or another suit. */
+ if(same.length){
+  /* If the current winning card is still the lead suit and the player can
+     beat it with the lead suit, only those higher lead-suit cards are legal. */
+  if(winCard.suit===lead){
+   var higherLead=same.filter(function(c){return V[c.rank]>V[winCard.rank]});
+   if(higherLead.length)return higherLead;
+  }
+  /* A Spade is already winning, or player cannot beat the lead-suit winner.
+     The player must still follow the lead suit. */
+  return same;
+ }
+ /* RULE 2: Player has NO lead suit. Spades are compulsory when available. */
+ var spades=h.filter(function(c){return c.suit==='♠'});
+ if(spades.length){
+  /* If a Spade is already winning, beat that Spade when possible. */
+  if(winCard.suit==='♠'){
+   var higherSpades=spades.filter(function(c){return V[c.rank]>V[winCard.rank]});
+   if(higherSpades.length)return higherSpades;
+  }
+  /* No higher Spade exists, so any held Spade is legal. */
+  return spades;
+ }
+ /* RULE 3: No lead suit and no Spade: any card may be discarded. */
+ return h.slice();
+}
 function play(index){var s=mode==='computer'?0:mySeat;if(phase!=='playing'||current!==s||busy||s<0||!hands[s]||!hands[s][index])return;var card=hands[s][index];if(mode==='online'&&!isHost){sendAction({type:'play',seat:s,card:card.rank+card.suit});return}applyPlay(s,index)}
 function applyPlay(s,index){normalise();if(phase!=='playing'||current!==s)return;var c=hands[s]&&hands[s][index];if(!c||legal(s).indexOf(c)<0)return;hands[s].splice(index,1);cards.push({player:s,card:c});current=(current+1)%4;stateVersion++;render();broadcast();if(cards.length===4){busy=true;setTimeout(finishTrick,700)}else continueTurn()}
 function botIndex(s){var l=legal(s).slice().sort(function(a,b){return (V[a.rank]+(a.suit==='♠'?20:0))-(V[b.rank]+(b.suit==='♠'?20:0))});return l.length?hands[s].indexOf(l[0]):-1}
