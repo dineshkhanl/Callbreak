@@ -20,7 +20,7 @@ body{font-size:16px}.app{max-width:1200px}.panel{box-shadow:0 3px 12px rgba(0,0,
 @media(max-width:600px){body{padding:7px}.panel{padding:10px}.card{width:54px;min-width:54px;height:76px;font-size:16px}.played{width:58px;height:76px;font-size:19px}.hand{gap:5px}.grid4,.players,.payments,.draw-area,.table{gap:5px}.player,.box{padding:7px 3px}.message{font-size:17px}}
 </style>
 </head>
-<body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1>
+<body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1><div class="status" style="text-align:center">Online build: public Realtime v4.3</div>
 <section class="panel"><h3>Game mode</h3><div class="modes"><button class="btn mode active" data-mode="computer">Play with 3 Computers</button><button class="btn mode" data-mode="online">Online Room</button></div>
 <div id="computerSetup" class="row" style="margin-top:10px"><label>Computer level</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Expert</option></select><button id="newComputer" class="btn danger">New 4-Round Game</button></div>
 <div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: The room owner can press Start Game immediately. Empty seats are automatically filled with computers. Example: 2 online players + 2 computers, or 3 online players + 1 computer.</div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
@@ -195,7 +195,7 @@ function connectRoom(create){
  loadSupabase().then(function(){
   room=code;isHost=create;
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  ch=sb.channel('callbreak-'+code,{config:{broadcast:{self:false},presence:{key:myId}}});
+  ch=sb.channel('callbreak-'+code,{config:{private:false,broadcast:{self:false,ack:true},presence:{key:myId}}});
   ch.on('presence',{event:'sync'},function(){
    var state=ch.presenceState(),all=[],seen={};
    Object.keys(state).forEach(function(k){
@@ -240,7 +240,7 @@ function connectRoom(create){
     connected=true;
     await ch.track({id:myId,name:name,joined:Date.now()});
     status('Connected to room '+code+(create?' as host.':'.'),'ok');
-    phase='lobby';E('startOnline').classList.toggle('hidden',!(isHost&&members.length>=4));render();ch.send({type:'broadcast',event:'request',payload:{sender:myId}});
+    phase='lobby';E('startOnline').classList.toggle('hidden',!(isHost&&members.length>=4));render();setTimeout(function(){ch.send({type:'broadcast',event:'request',payload:{sender:myId}})},300);
    }else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){
     connected=false;status('Connection: '+st,'error');
    }
