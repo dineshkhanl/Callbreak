@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d3326">
-<title>Call Break v4.2 - - 4 Round Computer and Online</title>
+<title>Call Break - 4 Round Computer and Online</title>
 <style>
 :root{--bg:#0d3326;--panel:#20523e;--deep:#143d2d;--gold:#ffd76b;--green:#8df0aa;--red:#d11d30;--blue:#9bd7ff}*{box-sizing:border-box}body{margin:0;padding:12px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}.app{max-width:1150px;margin:auto}h1{text-align:center;color:var(--gold);margin:8px}.panel{background:var(--panel);padding:14px;border-radius:12px;margin:12px 0}.hidden{display:none!important}.grid4,.players,.payments{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.box,.player,.pay{background:var(--deep);padding:10px;border-radius:9px;text-align:center}.box strong,.player strong,.pay strong{display:block;font-size:22px;color:var(--gold)}.player.active{outline:3px solid var(--gold)}.player.last-bid{outline:3px solid var(--blue)}button,input,select{font:inherit}.btn{border:0;border-radius:8px;padding:11px 14px;font-weight:bold;cursor:pointer}.mode{background:var(--deep);color:#fff;border:2px solid transparent}.mode.active{border-color:var(--gold);color:var(--gold)}.primary{background:var(--gold);color:#222}.secondary{background:#eee;color:#222}.danger{background:#efa6a6;color:#222}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row input,.row select{padding:10px;border:0;border-radius:8px;min-width:140px}.status{background:var(--bg);padding:10px;border-radius:8px;margin-top:8px}.ok{color:var(--green);border:1px solid var(--green)}.error{color:#ffb3b3;border:1px solid #ff9999}.message{text-align:center;color:var(--gold);font-weight:bold;font-size:19px;min-height:28px}.draw-area,.table{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.draw,.slot{background:var(--deep);padding:9px;border-radius:9px;text-align:center;min-height:108px}.face-down,.played{display:inline-flex;width:64px;height:82px;align-items:center;justify-content:center;border-radius:8px;font-size:22px;font-weight:bold}.face-down{background:repeating-linear-gradient(45deg,#224b8f,#224b8f 8px,#17366a 8px,#17366a 16px);border:3px solid #fff;cursor:pointer}.played{background:#fff;color:#111}.red{color:var(--red)!important}.hand{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.card{width:62px;height:82px;background:#fff;color:#111;border:2px solid #ddd;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer}.card:hover:not(:disabled){transform:translateY(-5px);border-color:var(--gold)}.card:disabled{opacity:.4;cursor:not-allowed}.card.legal{box-shadow:0 0 0 3px var(--green)}.bid-buttons{display:flex;flex-wrap:wrap;gap:7px}.bid-buttons button{min-width:44px}.score-table{width:100%;border-collapse:collapse}.score-table th,.score-table td{padding:8px;border-bottom:1px solid #6b9478;text-align:center}.right-score{position:sticky;top:8px}.people{display:flex;flex-wrap:wrap;gap:6px}.pill{background:var(--deep);padding:6px 10px;border-radius:18px}.rules{font-size:14px;line-height:1.5;color:#d7eadf}.warning{background:#523c12;color:#ffe6a1;padding:8px;border-radius:7px}@media(max-width:760px){.grid4,.players,.payments,.draw-area,.table{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr}.card{width:52px;height:72px;font-size:16px}.row>*{flex:1 1 130px}}
 </style>
@@ -20,10 +20,10 @@ body{font-size:16px}.app{max-width:1200px}.panel{box-shadow:0 3px 12px rgba(0,0,
 @media(max-width:600px){body{padding:7px}.panel{padding:10px}.card{width:54px;min-width:54px;height:76px;font-size:16px}.played{width:58px;height:76px;font-size:19px}.hand{gap:5px}.grid4,.players,.payments,.draw-area,.table{gap:5px}.player,.box{padding:7px 3px}.message{font-size:17px}}
 </style>
 </head>
-<body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1><div class="status" style="text-align:center">Online build: public Realtime v4.3</div>
+<body><main class="app"><div id="startupError" class="status error hidden"></div><h1>♥ CALL BREAK ♠</h1>
 <section class="panel"><h3>Game mode</h3><div class="modes"><button class="btn mode active" data-mode="computer">Play with 3 Computers</button><button class="btn mode" data-mode="online">Online Room</button></div>
 <div id="computerSetup" class="row" style="margin-top:10px"><label>Computer level</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Expert</option></select><button id="newComputer" class="btn danger">New 4-Round Game</button></div>
-<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: The room owner can press Start Game immediately. Empty seats are automatically filled with computers. Example: 2 online players + 2 computers, or 3 online players + 1 computer.</div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
+<div id="onlineSetup" class="hidden"><div class="row" style="margin-top:10px"><input id="onlineName" maxlength="20" placeholder="Your name"><input id="roomCode" maxlength="16" placeholder="Room code"><button id="createRoom" class="btn primary">Create Room</button><button id="joinRoom" class="btn secondary">Join Room</button></div><div id="onlineStatus" class="status">Add Supabase URL and anon key in the code. Many people can join; the first four are players and the rest are spectators.</div><div class="status" id="onlineGameHelp">ONLINE GAME: The game starts automatically when 2 human players are connected. Remaining seats are filled by computers; if 4 humans connect first, all 4 play. Each human taps PICK, makes a call in order, then plays only the green-outlined legal cards from their hand.</div><div class="row" id="hostControls" style="margin-top:10px"><button id="startOnline2" class="btn primary hidden" type="button">Start with 2 Online + Bots</button><button id="startOnline3" class="btn primary hidden" type="button">Start with 3 Online + Bots</button><button id="startOnline" class="btn primary hidden" type="button">Start with 4 Online</button></div><h4>Room members</h4><div id="people" class="people"><span class="pill">Not connected</span></div></div>
 <p class="rules">Four rounds. Four active players receive 13 cards. Players must beat the current winning card in the lead suit when possible. If no higher lead-suit card is available, ♠ is compulsory when available. Otherwise follow suit; if neither is available, any card may be played. ♠ is trump. Before Round 1, every active player draws a random face-down card. The lowest draw announces the call last. Only the four seated players are included in the final settlement.</p></section>
 <div class="grid4"><div class="box">Round<strong id="roundNo">1 / 4</strong></div><div class="box">Trick<strong id="trickNo">1 / 13</strong></div><div class="box">Lead suit<strong id="leadSuit">None</strong></div><div class="box">Trump<strong>♠</strong></div></div>
 <section id="drawPanel" class="panel"><h3>Draw to decide who calls last</h3><div id="drawArea" class="draw-area"></div><div id="drawMessage" class="message"></div></section>
@@ -42,31 +42,39 @@ var SUITS=['♣','♦','♥','♠'],RANKS=['2','3','4','5','6','7','8','9','10',
 var VALUE={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
 var mode='computer',names=['You','Computer 1','Computer 2','Computer 3'],hands=[[],[],[],[]],bids=[null,null,null,null],tricks=[0,0,0,0],totals=[0,0,0,0],roundScores=[[],[],[],[]],trickCards=[];
 var round=1,trick=1,current=0,leader=0,phase='lobby',busy=false,lastBidder=0,bidOrder=[0,1,2,3],bidTurn=0,drawCards=[null,null,null,null],timer=0;
-var onlineBots=[false,false,false,false];var sb=null,ch=null,connected=false,isHost=false,myId='p-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),mySeat=-1,room='',members=[];
+var onlineBots=[false,false,false,false],autoStartFired=false,processedDrawRequests={},drawFinishScheduled=false;var sb=null,ch=null,connected=false,isHost=false,myId='p-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),mySeat=-1,room='',members=[],joinedAt=Date.now();
 function E(id){return document.getElementById(id)}function red(c){return c.suit==='♥'||c.suit==='♦'}function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function deck(){var d=[];for(var s=0;s<4;s++)for(var r=0;r<13;r++)d.push({suit:SUITS[s],rank:RANKS[r]});return shuffle(d)}function sort(h){h.sort(function(a,b){return SUITS.indexOf(a.suit)-SUITS.indexOf(b.suit)||VALUE[a.rank]-VALUE[b.rank]})}
-function deal(){var d=deck();hands=[[],[],[],[]];for(var i=0;i<52;i++)hands[i%4].push(d[i]);for(var p=0;p<4;p++)sort(hands[p]);bids=[null,null,null,null];tricks=[0,0,0,0];trickCards=[];trick=1;leader=(round-1)%4;current=leader;phase=round===1?'draw':'bidding';busy=false;drawCards=[null,null,null,null];E('finalPayment').innerHTML='';if(round===1){startDraw()}else{beginBidding()}render();broadcast();if(mode==='online'&&isHost)setTimeout(runOnlineBots,120)}
+function deal(){var d=deck();hands=[[],[],[],[]];for(var i=0;i<52;i++)hands[i%4].push(d[i]);for(var p=0;p<4;p++)sort(hands[p]);bids=[null,null,null,null];tricks=[0,0,0,0];trickCards=[];trick=1;leader=(round-1)%4;current=leader;phase=round===1?'draw':'bidding';busy=false;drawCards=[null,null,null,null];E('finalPayment').innerHTML='';if(round===1)startDraw();else beginBidding();render();broadcast()}
 function startNew(){clearTimeout(timer);round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];deal()}
-function drawValue(c){return VALUE[c.rank]*4+SUITS.indexOf(c.suit)}function startDraw(){E('drawPanel').classList.remove('hidden');E('bidPanel').classList.add('hidden');if(mode==='computer'){for(var p=1;p<4;p++)drawCards[p]=deck()[0]}phase='draw';render();if(mode==='online')setTimeout(runOnlineBots,100);E('drawMessage').textContent=mode==='online'?(mySeat>=0?'Tap the ? card under your name to draw.':'Spectating: waiting for the four players to draw.'):'Select your face-down card.'}
+function drawValue(c){return VALUE[c.rank]*4+SUITS.indexOf(c.suit)}function startDraw(){processedDrawRequests={};drawFinishScheduled=false;E('drawPanel').classList.remove('hidden');E('bidPanel').classList.add('hidden');if(mode==='computer'){for(var p=1;p<4;p++)drawCards[p]=deck()[0]}phase='draw';render();if(mode==='online')setTimeout(runOnlineBots,100);E('drawMessage').textContent=mode==='online'?(mySeat>=0?'Tap the ? card under your name to draw.':'Spectating: waiting for the four players to draw.'):'Select your face-down card.'}
 function humanDraw(){if(phase!=='draw'||drawCards[0])return;drawCards[0]=deck()[0];finishDrawIfReady()}
 function finishDrawIfReady(){
+ if(mode==='online'&&!isHost)return;
+ if(drawFinishScheduled)return;
  for(var i=0;i<4;i++)if(!drawCards[i])return;
+ drawFinishScheduled=true;
  lastBidder=0;
  for(var p=1;p<4;p++)if(drawValue(drawCards[p])<drawValue(drawCards[lastBidder]))lastBidder=p;
+ /* Start with the player immediately clockwise after the lowest draw.
+    Continue clockwise through the other seats; the lowest-draw player calls last. */
  bidOrder=[];
  for(var step=1;step<=3;step++)bidOrder.push((lastBidder+step)%4);
  bidOrder.push(lastBidder);
  bidTurn=0;
- E('drawMessage').textContent=names[lastBidder]+' drew the lowest card. '+names[bidOrder[0]]+' calls first; '+names[lastBidder]+' calls last.';
+ E('drawMessage').textContent=names[lastBidder]+' drew the LOWEST card and calls LAST. Order: '+
+   bidOrder.map(function(seat,index){return (index+1)+'. '+names[seat]}).join(' → ');
  render();broadcast();
- timer=setTimeout(function(){E('drawPanel').classList.add('hidden');beginBidding()},1300);
+ timer=setTimeout(function(){if(phase!=='draw')return;E('drawPanel').classList.add('hidden');beginBidding();broadcast()},900);
 }
 function beginBidding(){
- phase='bidding';bidTurn=0;busy=false;E('bidPanel').classList.remove('hidden');advanceBidding();render();broadcast();if(mode==='online'&&isHost)setTimeout(runOnlineBots,120);
+ phase='bidding';bidTurn=0;E('bidPanel').classList.remove('hidden');
+ E('bidInstruction').textContent='Calling order: '+bidOrder.map(function(seat,index){return (index+1)+'. '+names[seat]}).join(' → ')+'. The lowest-card player calls last.';
+ advanceBidding();render();broadcast();
 }
 function advanceBidding(){
  while(bidTurn<4&&bids[bidOrder[bidTurn]]!==null)bidTurn++;
- if(bidTurn>=4){if(mode==='computer'||isHost)startPlay();return}
+ if(bidTurn>=4){if(mode!=='online'||isHost){startPlay()}return}
  var seat=bidOrder[bidTurn];
  E('bidInstruction').textContent=names[seat]+"'s turn to call. "+names[lastBidder]+' calls last.';
  createBidButtons();if(mode==='online')setTimeout(runOnlineBots,100);
@@ -89,7 +97,7 @@ function submitBid(n){
  else{bids[seat]=n;bidTurn++;render();advanceBidding()}
 }
 function checkAllBids(){for(var i=0;i<4;i++)if(bids[i]===null)return false;return true}
-function startPlay(){if(phase==='playing')return;phase='playing';busy=false;E('drawPanel').classList.add('hidden');E('bidPanel').classList.add('hidden');trickCards=[];trick=1;current=leader;render();broadcast();continueTurn();if(mode==='online'&&isHost)setTimeout(runOnlineBots,120)}
+function startPlay(){if(mode==='online'&&!isHost)return;if(phase==='playing')return;if(!checkAllBids())return;clearTimeout(timer);phase='playing';E('drawPanel').classList.add('hidden');E('bidPanel').classList.add('hidden');trickCards=[];trick=1;current=leader;busy=false;E('message').textContent='All calls are complete. Round 1 begins — '+names[current]+' plays first.';render();broadcast();continueTurn();broadcast()}
 function legalCards(p){
  var hand=hands[p];
  if(!trickCards.length)return hand.slice();
@@ -123,32 +131,18 @@ function applyPlay(seat,index){if(phase!=='playing'||current!==seat||!hands[seat
 function continueTurn(){if(phase!=='playing')return;if(mode==='computer'&&current!==0){busy=true;timer=setTimeout(function(){applyPlay(current,botChoice(current))},400)}else{busy=false;E('message').textContent=current===(mode==='computer'?0:mySeat)?'Your turn. Play a highlighted legal card.':names[current]+' is playing...';render();if(mode==='online')setTimeout(runOnlineBots,100)}}
 function botChoice(p){var h=hands[p],legal=legalCards(p),diff=E('difficulty').value.toLowerCase();if(diff==='easy')return h.indexOf(legal[Math.floor(Math.random()*legal.length)]);var ordered=legal.slice().sort(function(a,b){return strength(a)-strength(b)}),wins=[];for(var i=0;i<ordered.length;i++){if(winner(trickCards.concat([{player:p,card:ordered[i]}])).player===p)wins.push(ordered[i])}var need=tricks[p]<(bids[p]||1),choice=need&&wins.length?wins[0]:ordered[0];return h.indexOf(choice)}function strength(c){return VALUE[c.rank]+(c.suit==='♠'?20:0)}
 function winner(cards){var lead=cards[0].card.suit,best=cards[0];for(var i=1;i<cards.length;i++){var c=cards[i],bt=best.card.suit==='♠',ct=c.card.suit==='♠';if(ct&&!bt)best=c;else if(ct===bt&&c.card.suit===best.card.suit&&VALUE[c.card.rank]>VALUE[best.card.rank])best=c;else if(!ct&&!bt&&c.card.suit===lead&&best.card.suit!==lead)best=c}return best}
-function finishTrick(){var w=winner(trickCards).player;tricks[w]++;leader=w;current=w;E('message').textContent=names[w]+' wins the trick.';render();timer=setTimeout(function(){trickCards=[];trick++;busy=false;if(trick>13)finishRound();else{render();broadcast();continueTurn()}},750)}
-function finishRound(){
- if(phase==='roundEnd'||phase==='finished')return;
- phase='roundEnd';busy=true;clearTimeout(timer);
- for(var p=0;p<4;p++){
-  var call=Number(bids[p])||0;
-  var won=Number(tricks[p])||0;
-  var rs=won>=call?call+(won-call)*0.1:-call;
-  roundScores[p].push(rs);totals[p]+=rs;
- }
- render();broadcast();
- if(round>=4){finishGame();return}
- var nextRound=round+1;
- E('message').textContent='All 52 cards finished. Round '+round+' scores saved. Round '+nextRound+' starts in 3 seconds.';
- render();broadcast();
- if(mode==='online'){
-  if(isHost){
-   timer=setTimeout(function(){round=nextRound;busy=false;deal();broadcast()},3000);
-  }
- }else{
-  timer=setTimeout(function(){round=nextRound;busy=false;deal()},3000);
- }
-}
+function finishTrick(){var w=winner(trickCards).player;tricks[w]++;leader=w;current=w;E('message').textContent=names[w]+' wins the trick.';render();timer=setTimeout(function(){trickCards=[];trick++;busy=false;if(trick>13)finishRound();else{render();continueTurn()}},750)}
+function finishRound(){phase='roundEnd';for(var p=0;p<4;p++){var rs=tricks[p]>=bids[p]?bids[p]+(tricks[p]-bids[p])*.1:-bids[p];roundScores[p].push(rs);totals[p]+=rs}render();broadcast();if(round>=4)finishGame();else{E('message').innerHTML='Round '+round+' complete. ';var b=document.createElement('button');b.className='btn primary';b.textContent='Start Round '+(round+1);b.onclick=function(){if(mode==='online'&&!isHost)return;round++;deal()};if(mode!=='online'||isHost)E('message').appendChild(b)}}
 function finishGame(){phase='finished';var order=[0,1,2,3].sort(function(a,b){return totals[b]-totals[a]});var payment={};payment[order[0]]=30;payment[order[1]]=-5;payment[order[2]]=-10;payment[order[3]]=-15;var html='<h3>Final result</h3><div class="payments">';for(var i=0;i<4;i++){var p=order[i],label=i===0?'Winner - WON $30':(i===1?'2nd - pays $5':i===2?'3rd - pays $10':'Last - pays $15');html+='<div class="pay"><div>'+names[p]+'</div><strong>'+totals[p].toFixed(1)+'</strong><div>'+label+'</div></div>'}html+='</div><p>'+names[order[0]]+' won $30 in total from the other three players.</p>';E('finalPayment').innerHTML=html;E('message').textContent='Four-round game complete.';broadcast()}
-function render(){if(mode==='online'){var gh=E('onlineGameHelp');if(gh){var ht=phase==='lobby'?'Waiting in lobby. The room owner can start now; empty seats become computers.':phase==='draw'?'Each seated player: tap PICK under your name.':phase==='bidding'?(bidTurn<4?names[bidOrder[bidTurn]]+' must make a call now.':'Calls complete.'):(phase==='playing'?names[current]+"'s turn to play.":phase==='roundEnd'?'Round finished. Check the score and start next round.':phase==='finished'?'Game finished. Final result shown.':'');gh.textContent=ht}}E('roundNo').textContent=round+' / 4';E('trickNo').textContent=Math.min(trick,13)+' / 13';E('leadSuit').textContent=trickCards.length?trickCards[0].card.suit:'None';var pa=E('players');pa.innerHTML='';for(var p=0;p<4;p++){var d=document.createElement('div');d.className='player'+(phase==='playing'&&current===p?' active':'')+(p===lastBidder?' last-bid':'');d.innerHTML='<div>'+names[p]+'</div><strong>'+(bids[p]===null?'Call ?':'Call '+bids[p])+'</strong><div>Won '+tricks[p]+' | Cards '+hands[p].length+'</div>';pa.appendChild(d)}var table=E('table');table.innerHTML='';for(var t=0;t<4;t++){var s=document.createElement('div');s.className='slot';s.textContent=names[t];for(var z=0;z<trickCards.length;z++)if(trickCards[z].player===t){var pc=document.createElement('div');pc.className='played'+(red(trickCards[z].card)?' red':'');pc.textContent=trickCards[z].card.rank+trickCards[z].card.suit;s.appendChild(document.createElement('br'));s.appendChild(pc)}table.appendChild(s)}renderHand();renderDraw();renderScores()}
+function render(){if(mode==='online'){var gh=E('onlineGameHelp');if(gh){var ht=phase==='lobby'?'Waiting for 2 human players. The game then starts with computers filling empty seats.':phase==='draw'?'Each seated player: tap PICK under your name.':phase==='bidding'?(bidTurn<4?names[bidOrder[bidTurn]]+' must make a call now.':'Calls complete.'):(phase==='playing'?names[current]+"'s turn to play.":phase==='roundEnd'?'Round finished. Check the score and start next round.':phase==='finished'?'Game finished. Final result shown.':'');gh.textContent=ht}}E('roundNo').textContent=round+' / 4';E('trickNo').textContent=Math.min(trick,13)+' / 13';E('leadSuit').textContent=trickCards.length?trickCards[0].card.suit:'None';var pa=E('players');pa.innerHTML='';for(var p=0;p<4;p++){var d=document.createElement('div');d.className='player'+(phase==='playing'&&current===p?' active':'')+(p===lastBidder?' last-bid':'');d.innerHTML='<div>'+names[p]+'</div><strong>'+(bids[p]===null?'Call ?':'Call '+bids[p])+'</strong><div>Won '+tricks[p]+' | Cards '+hands[p].length+'</div>';pa.appendChild(d)}var table=E('table');table.innerHTML='';for(var t=0;t<4;t++){var s=document.createElement('div');s.className='slot';s.textContent=names[t];for(var z=0;z<trickCards.length;z++)if(trickCards[z].player===t){var pc=document.createElement('div');pc.className='played'+(red(trickCards[z].card)?' red':'');pc.textContent=trickCards[z].card.rank+trickCards[z].card.suit;s.appendChild(document.createElement('br'));s.appendChild(pc)}table.appendChild(s)}renderHand();renderDraw();renderScores()}
 function renderHand(){var seat=mode==='computer'?0:mySeat,a=E('hand');a.innerHTML='';if(seat<0||!hands[seat]){a.textContent='Spectator view: private hands are hidden.';return}var legal=phase==='playing'&&current===seat?legalCards(seat):[];for(var i=0;i<hands[seat].length;i++){var c=hands[seat][i],b=document.createElement('button');b.className='card'+(red(c)?' red':'')+(legal.indexOf(c)>=0?' legal':'');b.textContent=c.rank+c.suit;b.dataset.i=i;b.disabled=phase!=='playing'||current!==seat||busy||legal.indexOf(c)<0;b.onclick=function(){playHuman(Number(this.dataset.i))};a.appendChild(b)}E('handHelp').classList.toggle('hidden',!(phase==='playing'&&current===seat))}
+function requestOnlineDraw(seat){
+ if(!connected||!ch||seat!==mySeat||phase!=='draw')return;
+ /* Send a direct broadcast action to the host. Presence is used only to
+    determine seating; it is not used as the draw-command transport. */
+ broadcastAction({type:'draw',seat:seat,round:round});
+ status('Draw sent. Waiting for the host to confirm your card.','ok');
+}
 function renderDraw(){
  var a=E('drawArea');a.innerHTML='';
  for(var p=0;p<4;p++){
@@ -156,26 +150,45 @@ function renderDraw(){
   var lab=document.createElement('div');lab.textContent=names[p];d.appendChild(lab);
   var c=document.createElement('button');c.type='button';
   if(drawCards[p]){c.className='played'+(red(drawCards[p])?' red':'');c.textContent=drawCards[p].rank+drawCards[p].suit;c.disabled=true}
-  else{c.className='face-down';c.textContent=(mode==='online'&&p===mySeat)?'PICK':'?';c.disabled=!((mode==='computer'&&p===0)||(mode==='online'&&p===mySeat&&connected&&phase==='draw'));if(!c.disabled)c.addEventListener('click',(function(seat){return function(){if(mode==='computer'){humanDraw();return}if(drawCards[seat])return;if(isHost){drawCards[seat]=deck()[0];render();broadcast();finishDrawIfReady()}else{this.disabled=true;this.textContent='WAIT';broadcastAction({type:'draw',seat:seat})}}})(p))}
+  else{c.className='face-down';c.textContent=(mode==='online'&&p===mySeat)?'PICK':'?';c.disabled=!((mode==='computer'&&p===0)||(mode==='online'&&p===mySeat&&connected&&phase==='draw'));if(!c.disabled)c.addEventListener('click',(function(seat){return function(){if(mode==='computer'){humanDraw();return}if(drawCards[seat])return;if(isHost){if(!drawCards[seat]){drawCards[seat]=deck()[0];render();broadcast();finishDrawIfReady()}}else{this.disabled=true;this.textContent='WAIT';requestOnlineDraw(seat)}}})(p))}
   d.appendChild(c);a.appendChild(d);
  }
 }
 function renderScores(){var h='<table class="score-table"><tr><th>Player</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>Total</th></tr>';for(var p=0;p<4;p++){h+='<tr><td>'+names[p]+'</td>';for(var r=0;r<4;r++)h+='<td>'+(roundScores[p][r]===undefined?'-':roundScores[p][r].toFixed(1))+'</td>';h+='<td><strong>'+totals[p].toFixed(1)+'</strong></td></tr>'}E('scoreBoard').innerHTML=h+'</table>'}
-function setMode(m){mode=m;document.querySelectorAll('.mode').forEach(function(b){b.classList.toggle('active',b.dataset.mode===m)});E('computerSetup').classList.toggle('hidden',m!=='computer');E('onlineSetup').classList.toggle('hidden',m!=='online');if(m==='computer'){names=['You','Computer 1','Computer 2','Computer 3'];mySeat=0;startNew()}else{names=['Seat 1','Seat 2','Seat 3','Seat 4'];mySeat=-1;phase='lobby';hands=[[],[],[],[]];bids=[null,null,null,null];tricks=[0,0,0,0];drawCards=[null,null,null,null];E('drawPanel').classList.add('hidden');E('bidPanel').classList.add('hidden');E('message').textContent='Join or create a room, then press Start Game. Empty seats are filled with computers.';render()}}
+function setMode(m){mode=m;document.querySelectorAll('.mode').forEach(function(b){b.classList.toggle('active',b.dataset.mode===m)});E('computerSetup').classList.toggle('hidden',m!=='computer');E('onlineSetup').classList.toggle('hidden',m!=='online');if(m==='computer'){names=['You','Computer 1','Computer 2','Computer 3'];mySeat=0;startNew()}else{names=['Seat 1','Seat 2','Seat 3','Seat 4'];mySeat=-1;autoStartFired=false;onlineBots=[false,false,false,false];phase='lobby';hands=[[],[],[],[]];bids=[null,null,null,null];tricks=[0,0,0,0];drawCards=[null,null,null,null];E('drawPanel').classList.add('hidden');E('bidPanel').classList.add('hidden');E('message').textContent='Join a room. The game starts automatically when 2 human players are connected; empty seats become computers.';render()}}
 function loadSupabase(){return window.supabase?Promise.resolve():Promise.reject(new Error('Supabase library did not load. Open this file from GitHub Pages or a normal web server, not the Microsoft 365 preview.'))}
 function status(t,type){E('onlineStatus').textContent=t;E('onlineStatus').className='status'+(type?' '+type:'')}
 function publicState(){return{round:round,trick:trick,current:current,leader:leader,phase:phase,lastBidder:lastBidder,bidOrder:bidOrder,bidTurn:bidTurn,bids:bids,tricks:tricks,totals:totals,roundScores:roundScores,trickCards:trickCards,drawCards:drawCards,names:names,handCounts:hands.map(function(h){return h.length})}}
-function fullState(){var s=publicState();s.hands=hands;return s}function broadcast(){if(mode==='online'&&connected&&isHost&&ch)ch.send({type:'broadcast',event:'state',payload:fullState()})}
-function broadcastAction(a){if(connected&&ch)ch.send({type:'broadcast',event:'action',payload:Object.assign({sender:myId},a)})}
-function applyOnlineState(s){if(!s)return;busy=false;round=s.round;trick=s.trick;current=s.current;leader=s.leader;phase=s.phase;lastBidder=s.lastBidder;bidOrder=s.bidOrder||[0,1,2,3];bidTurn=Number(s.bidTurn)||0;bids=s.bids;E('drawPanel').classList.toggle('hidden',phase!=='draw');E('bidPanel').classList.toggle('hidden',phase!=='bidding');tricks=s.tricks;totals=s.totals;roundScores=s.roundScores;trickCards=s.trickCards;drawCards=s.drawCards;names=s.names;if(s.hands)hands=s.hands;render()}
+function fullState(){var s=publicState();s.hands=hands;s.onlineBots=onlineBots.slice();return s}function broadcast(){if(mode==='online'&&connected&&isHost&&ch){ch.send({type:'broadcast',event:'state',payload:fullState()}).then(function(result){if(result&&result==='error')status('Could not sync game state. Check Supabase Realtime settings.','error')}).catch(function(err){status('State sync failed: '+(err.message||err),'error')})}}
+function broadcastAction(a){if(connected&&ch){ch.send({type:'broadcast',event:'action',payload:Object.assign({sender:myId},a)}).then(function(result){if(result&&result==='error')status('Action was not sent. Check Supabase Realtime settings.','error')}).catch(function(err){status('Action send failed: '+(err.message||err),'error')})}else{status('Not connected to the room. Rejoin before playing.','error')}}
+function applyOnlineState(s){if(!s)return;busy=false;round=s.round;trick=s.trick;current=s.current;leader=s.leader;phase=s.phase;lastBidder=s.lastBidder;bidOrder=s.bidOrder||[0,1,2,3];bidTurn=Number(s.bidTurn)||0;bids=s.bids;E('drawPanel').classList.toggle('hidden',phase!=='draw');E('bidPanel').classList.toggle('hidden',phase!=='bidding');tricks=s.tricks;totals=s.totals;roundScores=s.roundScores;trickCards=s.trickCards;drawCards=s.drawCards;names=s.names;if(s.hands)hands=s.hands;if(s.onlineBots)onlineBots=s.onlineBots.slice();render();if(phase==='bidding'&&bidTurn<4){E('bidPanel').classList.remove('hidden');var caller=bidOrder[bidTurn];E('bidInstruction').textContent=names[caller]+"'s turn to call. "+names[lastBidder]+' calls last.';createBidButtons()}else{E('bidButtons').innerHTML='';if(phase!=='bidding')E('bidPanel').classList.add('hidden')}}
 function hostAction(a){
  if(!isHost||!a||a.sender===myId)return;
- if(a.type==='start'&&phase==='lobby'&&members.length>=4){startNew();return}
- if(a.type==='bid'&&phase==='bidding'&&bidTurn<4&&a.seat===bidOrder[bidTurn]&&bids[a.seat]===null){bids[a.seat]=a.bid;bidTurn++;render();advanceBidding();broadcast();return}
- if(a.type==='play'&&phase==='playing'&&a.seat===current){var idx=a.index;if(a.card){idx=-1;for(var q=0;q<hands[a.seat].length;q++){if(hands[a.seat][q].rank+hands[a.seat][q].suit===a.card){idx=q;break}}}if(idx>=0){applyPlay(a.seat,idx);broadcast()}return}
- if(a.type==='draw'&&phase==='draw'&&!drawCards[a.seat]){drawCards[a.seat]=deck()[0];render();broadcast();finishDrawIfReady();return}
+ if(a.type==='start'&&phase==='lobby'&&members.length>=2){startOnlineWithBots(2);return}
+ if(a.type==='bid'&&phase==='bidding'&&bidTurn<4&&Number.isInteger(a.seat)&&a.seat===bidOrder[bidTurn]&&a.bid>=1&&a.bid<=8&&bids[a.seat]===null){var bidSenderSeat=members.findIndex(function(m){return m.id===a.sender});if(bidSenderSeat!==a.seat)return;bids[a.seat]=a.bid;bidTurn++;render();advanceBidding();broadcast();return}
+ if(a.type==='play'&&phase==='playing'&&a.seat===current&&members.some(function(m,i){return i===a.seat&&m.id===a.sender})){var idx=a.index;if(a.card){idx=-1;for(var q=0;q<hands[a.seat].length;q++){if(hands[a.seat][q].rank+hands[a.seat][q].suit===a.card){idx=q;break}}}if(idx>=0){applyPlay(a.seat,idx);broadcast()}return}
+ if(a.type==='draw'&&phase==='draw'&&a.round===round&&Number.isInteger(a.seat)&&a.seat>=0&&a.seat<4){
+  /* Confirm that the sender really owns the requested seat. */
+  var senderSeat=-1;
+  for(var si=0;si<Math.min(4,members.length);si++){if(members[si].id===a.sender){senderSeat=si;break}}
+  if(senderSeat!==a.seat||drawCards[a.seat])return;
+  drawCards[a.seat]=deck()[0];
+  render();broadcast();finishDrawIfReady();return;
+ }
 }
 
+function startOnlineWithBots(minHumans){
+ if(!isHost||phase!=='lobby')return;
+ if(members.length<minHumans){status('Need at least '+minHumans+' online players before starting.','error');return}
+ if(members.length>4){status('Only the first four connected players can take seats.','error');return}
+ onlineBots=[false,false,false,false];
+ for(var i=members.length;i<4;i++){onlineBots[i]=true;names[i]='Computer '+(i+1)}
+ for(var j=0;j<members.length;j++)names[j]=members[j].name;
+ E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden');
+ round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];
+ status(members.length+' online player(s); '+(4-members.length)+' computer(s). Game starting...','ok');
+ deal();broadcast();
+}
 function runOnlineBots(){
  if(mode!=='online'||!isHost)return;
  if(phase==='draw'){
@@ -195,42 +208,21 @@ function connectRoom(create){
  loadSupabase().then(function(){
   room=code;isHost=create;
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  ch=sb.channel('callbreak-'+code,{config:{private:false,broadcast:{self:false,ack:true},presence:{key:myId}}});
+  ch=sb.channel('callbreak-'+code,{config:{broadcast:{self:false},presence:{key:myId}}});
   ch.on('presence',{event:'sync'},function(){
-   var state=ch.presenceState(),all=[],seen={};
-   Object.keys(state).forEach(function(k){
-    state[k].forEach(function(person){
-     var uid=person.id||k;
-     if(!seen[uid]){seen[uid]=true;all.push(person)}
-    });
-   });
-   all=all.sort(function(a,b){return (a.joined||0)-(b.joined||0)||String(a.id).localeCompare(String(b.id))});
-   var uniqueNames={},seatMembers=[];
-   for(var mi=0;mi<all.length;mi++){
-    var nk=normalizePlayerName(all[mi].name);
-    if(!uniqueNames[nk]){uniqueNames[nk]=true;seatMembers.push(all[mi])}
-   }
-   members=seatMembers;
-   isHost=members.length>0&&members[0].id===myId;
-   for(var i=0;i<4;i++)names[i]=members[i]?members[i].name:'Seat '+(i+1);
+   var state=ch.presenceState(),all=[];
+   Object.keys(state).forEach(function(k){all=all.concat(state[k])});
+   members=all.sort(function(a,b){return (a.joined||0)-(b.joined||0)||String(a.id).localeCompare(String(b.id))});
+   if(phase==='lobby'){for(var i=0;i<4;i++)names[i]=members[i]?members[i].name:'Seat '+(i+1);}
    mySeat=-1;
-   for(var j=0;j<Math.min(4,members.length);j++)if(members[j].id===myId)mySeat=j;if(mySeat<0){var mine=all.find(function(x){return x.id===myId});if(mine&&members.some(function(x){return normalizePlayerName(x.name)===normalizePlayerName(mine.name)})){status('Duplicate name blocked. Choose a different name and rejoin.','error')}}
+   for(var j=0;j<Math.min(4,members.length);j++)if(members[j].id===myId)mySeat=j;
    E('people').innerHTML='';
-   all.forEach(function(m){
-    var seat=-1;for(var si=0;si<Math.min(4,members.length);si++){if(members[si].id===m.id){seat=si;break}}
-    var duplicate=seat<0&&members.some(function(x){return normalizePlayerName(x.name)===normalizePlayerName(m.name)});
-    var tag=document.createElement('span');tag.className='pill';
-    tag.textContent=m.name+(seat>=0?' - Seat '+(seat+1):(duplicate?' - Duplicate name blocked':' - Spectator'));
-    E('people').appendChild(tag)
-   });
-   if(isHost&&phase==='lobby'&&members.length>=1){
-    E('startOnline').classList.remove('hidden');
-    E('startHint').classList.remove('hidden');
-    E('startHint').textContent='Start with '+members.length+' online player'+(members.length===1?'':'s')+' + '+(4-members.length)+' computer'+((4-members.length)===1?'':'s');
-   }else{
-    E('startOnline').classList.add('hidden');
-    E('startHint').classList.add('hidden');
-   }if(phase==='lobby'){status(members.length<4?(isHost?'Connected. Press Start Game for '+members.length+' online + '+(4-members.length)+' computer(s).':'Connected. Waiting for host. '+members.length+'/4 valid unique players connected, '+all.length+' connection(s).'):(isHost?'4 human players seated. Press Start Online Game.':'4 players seated. Waiting for host to start.'),'ok')}render();if(isHost)broadcast();
+   members.forEach(function(m,i){var tag=document.createElement('span');tag.className='pill';tag.textContent=m.name+(i<4?' - Seat '+(i+1):' - Spectator');E('people').appendChild(tag)});
+   if(isHost&&phase==='lobby'){E('startOnline2').classList.toggle('hidden',members.length<2);E('startOnline3').classList.toggle('hidden',members.length<3);E('startOnline').classList.toggle('hidden',members.length<4)}else{E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden')}if(phase==='lobby'){status(isHost?'Connected. '+members.length+' human player(s). Start with 2, 3, or 4 online players; empty seats become computers.':'Connected. Waiting for the host. '+members.length+'/4 human players connected; game starts at 2.','ok')}render();
+    if(isHost && phase==='lobby' && members.length>=2 && !autoStartFired){
+      autoStartFired=true;
+      startOnlineWithBots(2);
+    }else if(isHost)broadcast();
   });
   ch.on('broadcast',{event:'state'},function(m){if(!isHost)applyOnlineState(m.payload)});
   ch.on('broadcast',{event:'action'},function(m){hostAction(m.payload)});
@@ -238,9 +230,9 @@ function connectRoom(create){
   ch.subscribe(async function(st){
    if(st==='SUBSCRIBED'){
     connected=true;
-    await ch.track({id:myId,name:name,joined:Date.now()});
+    await ch.track({id:myId,name:name,joined:joinedAt});
     status('Connected to room '+code+(create?' as host.':'.'),'ok');
-    phase='lobby';E('startOnline').classList.toggle('hidden',!(isHost&&members.length>=4));render();setTimeout(function(){ch.send({type:'broadcast',event:'request',payload:{sender:myId}})},300);
+    phase='lobby';E('startOnline2').classList.add('hidden');E('startOnline3').classList.add('hidden');E('startOnline').classList.add('hidden');render();ch.send({type:'broadcast',event:'request',payload:{sender:myId}});
    }else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){
     connected=false;status('Connection: '+st,'error');
    }
@@ -250,19 +242,7 @@ function connectRoom(create){
 document.querySelectorAll('.mode').forEach(function(b){b.addEventListener('click',function(){setMode(this.dataset.mode)})});
 E('newComputer').addEventListener('click',startNew);
 E('createRoom').addEventListener('click',function(){connectRoom(true)});
-E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('startOnline').addEventListener('click',function(){
- if(!isHost||phase!=='lobby'){status('Only the room owner can start from the lobby.','error');return}
- if(members.length<1||members.length>4){status('The room needs between 1 and 4 unique online players.','error');return}
- onlineBots=[false,false,false,false];
- for(var i=0;i<4;i++){
-  if(i<members.length){names[i]=members[i].name}
-  else{onlineBots[i]=true;names[i]='Computer '+(i+1)}
- }
- E('startOnline').classList.add('hidden');E('startHint').classList.add('hidden');
- round=1;totals=[0,0,0,0];roundScores=[[],[],[],[]];
- status('Starting with '+members.length+' online player(s) and '+(4-members.length)+' computer(s).','ok');
- deal();broadcast();
-});
+E('joinRoom').addEventListener('click',function(){connectRoom(false)});E('startOnline2').addEventListener('click',function(){startOnlineWithBots(2)});E('startOnline3').addEventListener('click',function(){startOnlineWithBots(3)});E('startOnline').addEventListener('click',function(){startOnlineWithBots(4)});
 window.addEventListener('error',function(e){var box=E('startupError');if(box){box.textContent='Game error: '+(e.message||'Unknown script error');box.classList.remove('hidden')}});
 try{setMode('computer')}catch(e){var box=E('startupError');if(box){box.textContent='Game could not start: '+e.message;box.classList.remove('hidden')}}
 })();
